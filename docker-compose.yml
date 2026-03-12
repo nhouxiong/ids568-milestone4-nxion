@@ -1,0 +1,50 @@
+name: spark-cluster
+
+services:
+  spark-master:
+    image: apache/spark-py:latest
+    container_name: spark-master
+    environment:
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8080
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "4040:4040"
+    networks: [sparknet]
+    volumes:
+      - .:/opt/spark/apps        # ← changed from ./work to .
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+
+  spark-worker-1:
+    image: apache/spark-py:latest
+    container_name: spark-worker-1
+    depends_on: [spark-master]
+    environment:
+      - SPARK_WORKER_WEBUI_PORT=8081
+      - SPARK_WORKER_DIR=/tmp/spark-worker
+    ports:
+      - "8081:8081"
+    networks: [sparknet]
+    volumes:
+      - .:/opt/spark/apps        # ← changed from ./work to .
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker -c 1 -m 1G spark://spark-master:7077
+
+  spark-worker-2:
+    image: apache/spark-py:latest
+    container_name: spark-worker-2
+    depends_on: [spark-master]
+    environment:
+      - SPARK_WORKER_WEBUI_PORT=8082
+      - SPARK_WORKER_DIR=/tmp/spark-worker
+    ports:
+      - "8082:8082"
+    networks: [sparknet]
+    volumes:
+      - .:/opt/spark/apps        # ← changed from ./work to .
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker -c 1 -m 1G spark://spark-master:7077
+
+networks:
+  sparknet:
+    driver: bridge
