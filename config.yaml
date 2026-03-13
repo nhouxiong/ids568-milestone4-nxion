@@ -1,0 +1,12 @@
+﻿data_generation:
+  rows: 10000000
+  seed: 42
+  output: /opt/spark/apps/data/
+
+pipeline:
+  local:
+    master: local[1]
+    partitions: 10
+  distributed:
+    master: spark://spark-master:7077
+    partitions: 20
