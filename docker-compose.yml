@@ -36,10 +36,10 @@ services:
     container_name: spark-worker-2
     depends_on: [spark-master]
     environment:
-      - SPARK_WORKER_WEBUI_PORT=8082
+      - SPARK_WORKER_WEBUI_PORT=8083
       - SPARK_WORKER_DIR=/tmp/spark-worker
     ports:
-      - "8082:8082"
+      - "8083:8083"
     networks: [sparknet]
     volumes:
       - .:/opt/spark/apps        # ← changed from ./work to .

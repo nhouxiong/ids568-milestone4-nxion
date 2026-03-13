@@ -76,7 +76,7 @@ def generate_data(args) -> None:
         else:
             partition_file = os.path.join(args.output, "data.parquet")
         
-        df.to_parquet(partition_file, index=False)
+        df.to_parquet(partition_file, index=False, coerce_timestamps="us", allow_truncated_timestamps=True)
         print(f"  Chunk {chunk_id + 1}/{n_chunks}: {chunk_rows:,} rows")
     
     # Compute verification hash
